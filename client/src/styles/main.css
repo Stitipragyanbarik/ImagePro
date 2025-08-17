@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+/* Custom Scrollbar Styles */
+.custom-scrollbar, .scrollable-area {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.custom-scrollbar::-webkit-scrollbar,
+.scrollable-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track,
+.scrollable-area::-webkit-scrollbar-track {
+  background: #f7fafc;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb,
+.scrollable-area::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+  border: 1px solid #f7fafc;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
+.scrollable-area::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Force scrollbar to always show */
+.scrollable-area {
+  overflow-y: scroll !important;
+}
+
+/* Ensure content is not hidden behind the fixed navbar */
+.main-content {
+  padding-top: 70px; /* Adjust to match your header's height */
+}

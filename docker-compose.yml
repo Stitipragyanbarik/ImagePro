@@ -1,0 +1,35 @@
+services:
+  database:
+    image: mongo:5.0
+    container_name: imagepro-database
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build:
+      context: ./SERVER
+      no_cache: true
+    container_name: imagepro-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - SERVER/.env
+    depends_on:
+      - database
+
+  frontend:
+    build:
+      context: ./client
+    container_name: imagepro-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:

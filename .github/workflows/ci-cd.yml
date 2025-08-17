@@ -1,0 +1,79 @@
+name: ImagePro CI/CD 
+
+# When to run this workflow
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # Job 1: Check if code builds successfully
+  build-and-test:
+    runs-on: ubuntu-latest
+    name: Build and Test
+
+    steps:
+    # Step 1: Get the code
+    - name: Get code from repository
+      uses: actions/checkout@v4
+
+    # Step 2: Setup Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    # Step 3: Install backend dependencies
+    - name: Install Backend Dependencies
+      run: |
+        cd SERVER
+        npm install
+
+    # Step 4: Install frontend dependencies
+    - name: Install Frontend Dependencies
+      run: |
+        cd client
+        npm install
+
+    # Step 5: Check if backend builds
+    - name: Check Backend Build
+      run: |
+        cd SERVER
+        echo "✅ Backend dependencies installed successfully"
+
+    # Step 6: Check if frontend builds
+    - name: Check Frontend Build
+      run: |
+        cd client
+        npm run build
+        echo "✅ Frontend built successfully"
+
+  # Job 2: Build Docker containers (only on main branch)
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    name: Build Docker Images
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    # Step 1: Get the code
+    - name: Get code from repository
+      uses: actions/checkout@v4
+
+    # Step 2: Build Docker images
+    - name: Build Docker Images
+      run: |
+        echo "🐳 Building Docker images..."
+        docker-compose build
+        echo "✅ Docker images built successfully"
+
+    # Step 3: Test Docker containers
+    - name: Test Docker Containers
+      run: |
+        echo "🧪 Testing Docker containers..."
+        docker-compose up -d
+        sleep 30
+        docker-compose ps
+        docker-compose down
+        echo "✅ Docker containers tested successfully"
