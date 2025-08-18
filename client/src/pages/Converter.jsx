@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getApiUrl, API_ENDPOINTS } from '../config/api';
 import { saveRecentActivity } from '../utils/dataMigration';
 import DeleteConfirmPopup from '../components/DeleteConfirmPopup';
 import { validateFiles, handleNetworkError, handleServerError, isFileCorrupted } from '../utils/fileValidation';
@@ -262,7 +263,7 @@ function Converter() {
 
         console.log(`Converting ${fileData.file.name} to ${formatToSend}`);
 
-        const response = await fetch("http://localhost:5000/api/image/convert", {
+        const response = await fetch(getApiUrl(API_ENDPOINTS.CONVERT), {
           method: "POST",
           body: formData,
         });

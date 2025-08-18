@@ -62,7 +62,7 @@ function RecentActivity() {
 
       if (token) {
         // Load from cloud database
-        const response = await fetch('http://localhost:5000/api/image/recent-activity', {
+        const response = await fetch(getApiUrl('/image/recent-activity'), {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -164,7 +164,7 @@ function RecentActivity() {
     try {
       // Method 1: Try backend download route first (better headers)
       const filename = upload.resultUrl.split('/').pop().split('?')[0];
-      const backendDownloadUrl = `http://localhost:5000/api/image/download/${filename}`;
+      const backendDownloadUrl = getApiUrl(`/image/download/${filename}`);
 
       try {
         const response = await fetch(backendDownloadUrl);
@@ -226,7 +226,7 @@ function RecentActivity() {
         console.log('✅ Cleared localStorage recent activity');
       } else {
         // Clear cloud data for logged-in users
-        const response = await fetch('http://localhost:5000/api/image/clear-recent-activity', {
+        const response = await fetch(getApiUrl('/image/clear-recent-activity'), {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`,

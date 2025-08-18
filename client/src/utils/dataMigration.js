@@ -1,4 +1,5 @@
 // Data migration utility for localStorage → Cloud transfer
+import { getApiUrl } from '../config/api';
 
 /**
  * Migrate localStorage data to cloud when user logs in
@@ -37,7 +38,7 @@ export const migrateLocalDataToCloud = async () => {
         }
 
         // Save to cloud database
-        const response = await fetch('http://localhost:5000/api/image/save-activity', {
+        const response = await fetch(getApiUrl('/image/save-activity'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -171,7 +172,7 @@ export const loadRecentActivity = async () => {
 const loadFromCloud = async () => {
   try {
     const token = localStorage.getItem('authToken');
-    const response = await fetch('http://localhost:5000/api/image/recent-activity', {
+    const response = await fetch(getApiUrl('/image/recent-activity'), {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -232,7 +233,7 @@ const saveToCloud = async (uploadData) => {
 
     console.log('💾 Saving to cloud:', { fileName, resultUrl, type: uploadData.type, fileSize });
 
-    const response = await fetch('http://localhost:5000/api/image/save-activity', {
+    const response = await fetch(getApiUrl('/image/save-activity'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

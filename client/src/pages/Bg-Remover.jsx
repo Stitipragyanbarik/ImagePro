@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getApiUrl, API_ENDPOINTS } from '../config/api';
 import { saveRecentActivity } from '../utils/dataMigration';
 import BeforeAfterSlider from '../components/BeforeAfterSlider';
 import { removeBackgroundClientSide, removeBackgroundAdvanced } from '../utils/clientBgRemoval';
@@ -241,7 +242,7 @@ function BgRemover() {
           const formData = new FormData();
           formData.append("image", fileData.file);
 
-          const response = await fetch("http://localhost:5000/api/image/remove-bg", {
+          const response = await fetch(getApiUrl(API_ENDPOINTS.REMOVE_BG), {
             method: "POST",
             body: formData,
           });

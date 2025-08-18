@@ -34,7 +34,8 @@ export const API_ENDPOINTS = {
   HISTORY: '/image/history',
   RECENT_ACTIVITY: '/image/recent-activity',
   SAVE_ACTIVITY: '/image/save-activity',
-  CLEAR_ACTIVITY: '/image/clear-activity'
+  CLEAR_ACTIVITY: '/image/clear-activity',
+  CLEAR_RECENT_ACTIVITY: '/image/clear-recent-activity'
 };
 
 export default API_CONFIG;

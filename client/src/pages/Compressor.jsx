@@ -415,7 +415,7 @@ function Compressor() {
       formData.append('quality', newQuality.toString());
 
       // Send to server for compression (same as actual compression)
-      const response = await fetch('http://localhost:5000/api/image/compress', {
+      const response = await fetch(getApiUrl(API_ENDPOINTS.COMPRESS), {
         method: 'POST',
         body: formData,
       });
