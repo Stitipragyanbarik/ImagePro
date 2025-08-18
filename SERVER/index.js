@@ -16,7 +16,20 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ Database connected'))
   .catch((err) => console.error('❌ Database error:', err));
 
-app.use(cors());
+// CORS configuration for production
+const corsOptions = {
+  origin: [
+    'http://localhost:3000', // Local development
+    'https://image-c6ytee32p-stitipragyanbarik-9052s-projects.vercel.app', // Your Vercel frontend
+    /\.vercel\.app$/, // Allow all Vercel domains
+    /\.onrender\.com$/ // Allow all Render domains
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 
