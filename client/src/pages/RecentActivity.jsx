@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getApiUrl, API_ENDPOINTS } from '../config/api';
 import { loadRecentActivity } from '../utils/dataMigration';
 
 function RecentActivity() {

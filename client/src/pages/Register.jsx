@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
+import { getApiUrl, API_ENDPOINTS } from '../config/api';
 import Notification from '../components/Notification';
 
 // Validation schema for registration
@@ -21,7 +22,7 @@ function Register() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(getApiUrl(API_ENDPOINTS.REGISTER), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getApiUrl, API_ENDPOINTS } from './config/api';
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -32,7 +33,7 @@ function App() {
 
   const handleLogin = async (email, password) => {
   try {
-    const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+    const response = await axios.post(getApiUrl(API_ENDPOINTS.LOGIN), { email, password });
     const token = response.data.token;
     localStorage.setItem('authToken', token);
     setIsLoggedIn(true);

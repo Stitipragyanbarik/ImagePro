@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getApiUrl, API_ENDPOINTS } from '../config/api';
 import BeforeAfterSlider from '../components/BeforeAfterSlider';
 import DeleteConfirmPopup from '../components/DeleteConfirmPopup';
 import { saveRecentActivity } from '../utils/dataMigration';
@@ -219,7 +220,7 @@ function Compressor() {
           formData.append('image', fileData.file);
           formData.append('quality', quality);
 
-          const response = await fetch('http://localhost:5000/api/image/compress', {
+          const response = await fetch(getApiUrl(API_ENDPOINTS.COMPRESS), {
             method: 'POST',
             body: formData,
           });
