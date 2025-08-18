@@ -28,6 +28,15 @@ app.get("/", (req, res) => {
   res.send("ImagePro API Server is running!");
 });
 
+// Health check endpoint for CI/CD
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development"
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 ImagePro API running on port ${PORT}`);

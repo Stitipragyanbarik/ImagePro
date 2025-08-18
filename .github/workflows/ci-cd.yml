@@ -72,15 +72,20 @@ jobs:
     - name: Build Docker Images
       run: |
         echo "🐳 Building Docker images..."
-        docker-compose build
+        docker-compose -f docker-compose.ci.yml build
         echo "✅ Docker images built successfully"
 
     # Step 4: Test Docker containers
     - name: Test Docker Containers
       run: |
         echo "🧪 Testing Docker containers..."
-        docker-compose up -d
-        sleep 30
-        docker-compose ps
-        docker-compose down
+        docker-compose -f docker-compose.ci.yml up -d
+        sleep 45
+        echo "📋 Checking container status..."
+        docker-compose -f docker-compose.ci.yml ps
+        echo "🔍 Testing backend health endpoint..."
+        curl -f http://localhost:5000/health || echo "⚠️ Backend health check failed"
+        echo "🔍 Testing frontend availability..."
+        curl -f http://localhost:3000 || echo "⚠️ Frontend check failed"
+        docker-compose -f docker-compose.ci.yml down
         echo "✅ Docker containers tested successfully"

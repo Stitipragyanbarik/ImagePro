@@ -7,14 +7,19 @@ import upload, { uploadToDisk } from "../middlewares/uploadMiddleware.js";
 import { Storage } from "@google-cloud/storage";
 import ImageModel from "../models/Imagemodel.js";
 
-const storage = new Storage({
-    projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
-    credentials: {
-        client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY.replace(/\\n/g, '\n')
-    }
-});
-const bucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
+// Initialize Google Cloud Storage (skip in CI environment)
+let storage = null;
+let bucket = null;
+if (process.env.NODE_ENV !== 'test' && process.env.GOOGLE_CLOUD_PROJECT_ID !== 'dummy-project') {
+    storage = new Storage({
+        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+        credentials: {
+            client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+            private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY.replace(/\\n/g, '\n')
+        }
+    });
+    bucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
+}
 const router=express.Router();
 
 

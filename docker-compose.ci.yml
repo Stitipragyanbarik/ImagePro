@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  database:
+    image: mongo:5.0
+    container_name: imagepro-database-ci
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+
+  backend:
+    build:
+      context: ./SERVER
+      no_cache: true
+    container_name: imagepro-backend-ci
+    ports:
+      - "5000:5000"
+    environment:
+      # CI/CD environment variables (no sensitive data)
+      NODE_ENV: test
+      PORT: 5000
+      MONGODB_URI: mongodb://admin:password123@database:27017/imagepro?authSource=admin
+      JWT_SECRET: test_jwt_secret_for_ci_only
+      # Dummy Google Cloud credentials for CI (won't work but prevents crashes)
+      GOOGLE_CLOUD_PROJECT_ID: dummy-project
+      GOOGLE_CLOUD_BUCKET_NAME: dummy-bucket
+      GOOGLE_CLOUD_CLIENT_EMAIL: dummy@dummy.com
+      GOOGLE_CLOUD_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\nDUMMY_KEY_FOR_CI_TESTING\n-----END PRIVATE KEY-----"
+    depends_on:
+      - database
+
+  frontend:
+    build:
+      context: ./client
+      no_cache: true
+    container_name: imagepro-frontend-ci
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend

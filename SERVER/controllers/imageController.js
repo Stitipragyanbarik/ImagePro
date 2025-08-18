@@ -10,15 +10,19 @@ import Image from "../models/Imagemodel.js";
 
 dotenv.config();
 
-const storage = new Storage({
-    projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
-    credentials: {
-      client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
-      private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY.replace(/\\n/g, '\n') // Fix newlines in the private key
-    }
-});
+// Initialize Google Cloud Storage (skip in CI environment)
+let storage = null;
+if (process.env.NODE_ENV !== 'test' && process.env.GOOGLE_CLOUD_PROJECT_ID !== 'dummy-project') {
+    storage = new Storage({
+        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+        credentials: {
+          client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+          private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY.replace(/\\n/g, '\n') // Fix newlines in the private key
+        }
+    });
+}
  
-const bucket=storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
+const bucket = storage ? storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME) : null;
 
 
 /**
@@ -69,6 +73,19 @@ export const compressAndUploadImage = async(file,quality,email) =>{
     const compressedSize = compressedImage.length;
 
     const filename=`compressed-${uuidv4()}.${originalFormat === "jpeg" ? "jpg" :originalFormat}`;
+
+    // Skip Google Cloud Storage in CI environment
+    if (!bucket || process.env.NODE_ENV === 'test') {
+        console.log('⚠️ Skipping Google Cloud Storage upload in CI environment');
+        return {
+            filename,
+            fileUrl: `http://localhost:5000/test-image/${filename}`,
+            originalSize: file.size,
+            compressedSize,
+            compressionRatio: ((file.size - compressedSize) / file.size * 100).toFixed(2)
+        };
+    }
+
     const gcsFile = bucket.file(filename);
 
     const stream = gcsFile.createWriteStream({
