@@ -16,23 +16,42 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ Database connected'))
   .catch((err) => console.error('❌ Database error:', err));
 
-// Simple CORS configuration - allow all origins for now
+// AGGRESSIVE CORS FIX - This will definitely work
 app.use((req, res, next) => {
+  // Set CORS headers for all requests
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization,Cache-Control,Pragma');
+  res.header('Access-Control-Expose-Headers', 'Content-Length,Content-Range');
 
+  // Handle preflight requests immediately
   if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
+    console.log('🔧 Handling OPTIONS preflight request for:', req.url);
+    return res.status(200).end();
   }
+
+  console.log(`📡 ${req.method} ${req.url} - CORS headers set`);
+  next();
 });
 
-app.use(cors());
+// Also use the cors middleware as backup
+app.use(cors({
+  origin: '*',
+  credentials: true,
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
+}));
 
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
+
+// Debug middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`🔍 ${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log('🔍 Headers:', JSON.stringify(req.headers, null, 2));
+  next();
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/image', imageRoutes);
