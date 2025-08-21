@@ -16,26 +16,9 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ Database connected'))
   .catch((err) => console.error('❌ Database error:', err));
 
-// CORS configuration for production
-const corsOptions = {
-  origin: [
-    'http://localhost:3000', // Local development
-    'https://image-c6ytee32p-stitipragyanbarik-9052s-projects.vercel.app', // Your Vercel frontend
-    /\.vercel\.app$/, // Allow all Vercel domains
-    /\.onrender\.com$/ // Allow all Render domains
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200 // For legacy browser support
-};
-
-app.use(cors(corsOptions));
-
-// Additional CORS headers for preflight requests
+// Simple CORS configuration - allow all origins for now
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization');
 
@@ -46,6 +29,8 @@ app.use((req, res, next) => {
   }
 });
 
+app.use(cors());
+
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 
@@ -54,7 +39,14 @@ app.use('/api/image', imageRoutes);
 app.use(errorMiddleware);
 
 app.get("/", (req, res) => {
-  res.send("ImagePro API Server is running!");
+  res.header('Access-Control-Allow-Origin', '*');
+  res.send("ImagePro API Server is running! CORS should work now.");
+});
+
+// Test CORS endpoint
+app.get("/test-cors", (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.json({ message: "CORS is working!", timestamp: new Date().toISOString() });
 });
 
 // Handle favicon requests
