@@ -90,7 +90,7 @@ router.post("/convert", upload.single("image"),async(req,res)=>{
             message:"Image converted successfully",
             fileUrl: result.fileUrl,
             filename: result.filename,
-            downloadUrl: `http://localhost:5000/api/image/download/${result.filename}`
+            downloadUrl: `${BASE_URL}/api/image/download/${result.filename}`
         });
 
     }catch(error){
