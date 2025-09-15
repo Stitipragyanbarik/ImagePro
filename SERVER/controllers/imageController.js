@@ -79,7 +79,7 @@ export const compressAndUploadImage = async(file,quality,email) =>{
         console.log('⚠️ Skipping Google Cloud Storage upload in CI environment');
         return {
             filename,
-            fileUrl: `http://localhost:5000/test-image/${filename}`,
+            fileUrl: `https://imagepro-8fxb.onrender.com/test-image/${filename}`,
             originalSize: file.size,
             compressedSize,
             compressionRatio: ((file.size - compressedSize) / file.size * 100).toFixed(2)

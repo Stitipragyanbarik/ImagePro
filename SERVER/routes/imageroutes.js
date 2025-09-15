@@ -20,7 +20,7 @@ if (process.env.NODE_ENV !== 'test' && process.env.GOOGLE_CLOUD_PROJECT_ID !== '
     });
     bucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
 }
-const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
+const BASE_URL = process.env.BASE_URL || 'https://imagepro-8fxb.onrender.com';
 
 const router=express.Router();
 

@@ -178,7 +178,8 @@ export const removeBackground = async (req, res) => {
         fs.unlinkSync(outputPath);
 
         // Return success response with proper PNG format
-        const downloadUrl = `http://localhost:5000/api/image/download/${outputFileName}`;
+        const BASE_URL = process.env.BASE_URL || 'https://imagepro-8fxb.onrender.com';
+        const downloadUrl = `${BASE_URL}/api/image/download/${outputFileName}`;
 
         res.json({
             fileUrl: url,
