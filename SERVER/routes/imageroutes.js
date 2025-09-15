@@ -20,6 +20,8 @@ if (process.env.NODE_ENV !== 'test' && process.env.GOOGLE_CLOUD_PROJECT_ID !== '
     });
     bucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
 }
+const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
+
 const router=express.Router();
 
 
@@ -55,7 +57,7 @@ router.post("/compress",upload.single("image"), async(req,res)=>{
             originalSize: req.file.size,
             compressedSize: result.compressedSize,
             filename: result.filename,
-            downloadUrl: `http://localhost:5000/api/image/download/${result.filename}`
+            downloadUrl: `${BASE_URL}/api/image/download/${result.filename}`
         });
 
         
@@ -298,8 +300,8 @@ router.get("/recent-activity", authenticate, async (req, res) => {
                     id: upload._id.toString(),
                     fileName: upload.originalName,
                     type: upload.processingType,
-                    resultUrl: `http://localhost:5000/api/image/preview/${filename}`, // Use preview endpoint
-                    downloadUrl: `http://localhost:5000/api/image/download/${filename}`, // Add download URL
+                    resultUrl: `${BASE_URL}/api/image/preview/${filename}`, // Use preview endpoint
+                    downloadUrl: `${BASE_URL}/api/image/download/${filename}`, // Add download URL
                     uploadTime: upload.createdAt.toISOString(),
                     expiresAt: new Date(upload.createdAt.getTime() + 6 * 60 * 60 * 1000).toISOString(),
                     fileSize: upload.fileSize || 0,
